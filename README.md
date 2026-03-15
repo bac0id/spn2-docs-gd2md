@@ -1,6 +1,9 @@
 # spn2-docs-gd2md
 
-This experimental project automates the workflow of exporting Google Docs to Markdown[. It uses a headless browser to trigger exports and Pandoc to ensure high-fidelity conversion.
+This experimental project automates the workflow of exporting Google Docs to Markdown. It uses a headless browser to trigger exports and Pandoc to ensure high-fidelity conversion.
+
+- [SPN2 API Docs](https://docs.google.com/document/d/1Nsv52MvSjbLb2PCpHlat0gkzw0EvtSgpKHu4mk0MnrA)
+- [SPN2 Change Log](https://docs.google.com/document/d/19RJsRncGUw2qHqGGg9lqYZYf7KKXMDL1Mro5o1Qw6QI)
 
 ---
 
