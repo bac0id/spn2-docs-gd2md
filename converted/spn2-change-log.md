@@ -5,10 +5,21 @@
 **Please see also SPN2 public API docs:**
 [*https://docs.google.com/document/d/1Nsv52MvSjbLb2PCpHlat0gkzw0EvtSgpKHu4mk0MnrA/edit*](https://docs.google.com/document/d/1Nsv52MvSjbLb2PCpHlat0gkzw0EvtSgpKHu4mk0MnrA/edit)
 
+**2026-03-22**
+
+- Upgrade web crawlers to Google Chrome 142.
+
+- Limit max individual download size to 2GiB for authenticated patrons
+  > and 500MiB for anonymous patrons.
+
+- Limit archive size to 4GiB per day for authenticated patrons.
+
+- Limit max screenshot dimensions to 2000px width, 8000px height.
+
 **2025-11-13**
 
-- Limit archive size to 5GB per day for anonymous and 2GB per day for
-  > authenticated users.
+- Limit archive size to 5GiB per day for authenticated patrons and 2GiB
+  > per day for anonymous patrons.
 
 - Limit archive size to 100GB per day for a target host.
 
