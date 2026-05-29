@@ -72,46 +72,45 @@ be \"off\". If you use \"01\" or \"True\" it means \"off\".
 </tr>
 <tr class="even">
 <td>capture_all=1</td>
-<td>Capture a web page with errors (HTTP status=4xx or 5xx). By default
-SPN2 captures only status=200 URLs.</td>
+<td>Archive page even when the server returns an HTTP error status (4xx
+or 5xx). By default, only pages with HTTP status 200 OK are
+captured.</td>
 </tr>
 <tr class="odd">
 <td>capture_outlinks=1</td>
-<td>Capture web page outlinks automatically. This also applies to PDF,
-JSON, RSS and MRSS feeds.</td>
+<td>Automatically archive links found on the target page. Also applies
+to links discovered in PDF, JSON, epub, RSS and MRSS documents.</td>
 </tr>
 <tr class="even">
 <td>capture_screenshot=1</td>
-<td>Capture full page screenshot in PNG format. This is also stored in
-the Wayback Machine as a different capture.</td>
+<td>Generate and archive a full-page PNG screenshot of the target page.
+The screenshot is stored as a separate capture.</td>
 </tr>
 <tr class="odd">
 <td>delay_wb_availability=1</td>
 <td>The capture becomes available in the Wayback Machine after ~12 hours
-instead of immediately. This option helps reduce the load on our
-systems. All API responses remain exactly the same when using this
-option.</td>
+instead of immediately. This helps reduce system load. API responses
+remain the same.</td>
 </tr>
 <tr class="even">
 <td>force_get=1</td>
-<td>Force the use of a simple HTTP GET request to capture the target
-URL. By default SPN2 does a HTTP HEAD on the target URL to decide
-whether to use a headless browser or a simple HTTP GET request.
-force_get overrides this behavior.</td>
+<td>Always use an HTTP GET request for the capture. By default SPN2 does
+a HTTP HEAD request first to determine when a headless browser or a
+simple HTTP GET request is required. force_get overrides this
+behavior.</td>
 </tr>
 <tr class="odd">
 <td>skip_first_archive=1</td>
-<td>Skip checking if a capture is a first if you don’t need this
-information. This will make captures run faster.</td>
+<td>Skip checking if a capture is a first. Enable this option if you
+don’t need this information to improve performance.</td>
 </tr>
 <tr class="even">
 <td>if_not_archived_within=&lt;timedelta&gt;</td>
-<td>Capture web page only if the latest existing capture at the Archive
-is older than the &lt;timedelta&gt; limit<strong>. </strong>Its format
-could be any datetime expression like "3d 5h 20m" or just a number of
-seconds, e.g. "120". If there is a capture within the defined timedelta,
-SPN2 returns that as a recent capture. The default system
-&lt;timedelta&gt; is 45 min.</td>
+<td>Capture the web page only if the most recent capture is older than
+the specified limit. The limit format could be any datetime expression
+like "3d 5h 20m" or just a number of seconds, e.g. "120". If a newer
+capture already exists, SPN2 returns that as a recent capture instead of
+creating a new one. The default interval is 1 hour.</td>
 </tr>
 <tr class="odd">
 <td><p>if_not_archived_within=</p>
@@ -121,38 +120,40 @@ applies to the main capture and the second one applies to outlinks.</td>
 </tr>
 <tr class="even">
 <td>outlinks_availability=1</td>
-<td>Return the timestamp of the last capture for all outlinks.</td>
+<td>Include the timestamp of the last capture for all outlinks.</td>
 </tr>
 <tr class="odd">
 <td>email_result=1</td>
-<td>Send an email report of the captured URLs to the user’s email.</td>
+<td>Send an email report of the captured URLs to the Patron’s
+email.</td>
 </tr>
 <tr class="even">
 <td>js_behavior_timeout=&lt;N&gt;</td>
 <td><p>Run JS code for &lt;N&gt; seconds after page load to trigger
 target page functionality like image loading on mouse over, scroll down
-to load more content, etc. The default system &lt;N&gt; is 5 sec.</p>
+to load more content, etc. The default is 5 seconds and the maximum is
+30 seconds. Set 0 to disable JS execution and speed up the capture.</p>
 <p>More details on the JS code we execute:</p>
 <p><a
-href="https://github.com/internetarchive/brozzler/blob/master/brozzler/behaviors.yaml"><em>https://github.com/internetarchive/brozzler/blob/master/brozzler/behaviors.yaml</em></a></p>
-<p>WARNING: The max &lt;N&gt; value that applies is 30 sec.</p>
-<p>NOTE: If the target page doesn’t have any JS you need to run, you can
-use js_behavior_timeout=0 to speed up the capture.</p></td>
+href="https://github.com/internetarchive/brozzler/blob/master/brozzler/behaviors.yaml"><em>https://github.com/internetarchive/brozzler/blob/master/brozzler/behaviors.yaml</em></a></p></td>
 </tr>
 <tr class="odd">
 <td>capture_cookie=&lt;XXX&gt;</td>
-<td>Use extra HTTP Cookie value when capturing the target page.</td>
+<td>Use extra HTTP Cookie value when capturing the target page. Useful
+for capturing content that depends on session or authentication
+cookies.</td>
 </tr>
 <tr class="even">
 <td>use_user_agent=&lt;XXX&gt;</td>
-<td>Use custom HTTP User-Agent value when capturing the target page.
+<td>Use a custom HTTP User-Agent value when capturing the target page.
 </td>
 </tr>
 <tr class="odd">
 <td><p>target_username=&lt;XXX&gt;</p>
 <p>target_password=&lt;YYY&gt;</p></td>
 <td>Use your own username and password in the target page’s login
-forms.</td>
+forms.This can be used to archive content that requires
+authentication.</td>
 </tr>
 </tbody>
 </table>
@@ -172,7 +173,9 @@ In any case, a capture request might return:
 []{#anchor-4}Status request
 
 It is possible to see the status of one or multiple captures via the
-API.
+API. Note that the status API result is available for a limited time due
+to system memory limitations. Please try to check job status within 1
+hour after performing a capture request.
 
 To see a capture status, you can use an HTTP GET or POST request as
 follows:
@@ -581,29 +584,29 @@ response.
 
 []{#anchor-8}Tips for faster captures
 
-The following options have a real impact on the speed of your captures.
+The following options can significantly reduce capture time:
 
-- If you don't need to know if your capture is the first in the Archive,
-  > please use **skip_first_archive=1.**
+- Use **skip_first_archive=1** if you do not need to know whether the
+  > capture is the first archived copy.
 
-- If you are sure that the target URL is not an HTML page and can be
-  > downloaded via a plain HTTP request, use option **force_get=1.**
+- Use **force_get=1 **when the target URL is not an HTML page and can be
+  > retrieved with a simple HTTP request.
 
-- If the target HTML page is plain and you don't need to run any JS
-  > behavior to download all content (JS behaviors scroll down the page
-  > automatically and/or trigger AJAX requests), use
-  > **js_behavior_timeout=0.**
+- Use **js_behavior_timeout=0 **for pages that do not require JavaScript
+  > interactions to load their content. Disabling JavaScript behaviors
+  > avoids automated scrolling, clicks, and AJAX requests, resulting in
+  > faster captures.
 
-- Do NOT use **capture_outlinks=1 **unless it is really necessary to
-  > capture all outlinks. If you are interested in capturing a specific
-  > outlink, make a capture, check the list of outlinks returned by SPN2
-  > and capture only the specific outlink(s) you need.
+- Avoid **capture_outlinks=1 **unless you need to archive all discovered
+  > outlinks. If you only need specific outlinks, first capture the
+  > target page, review the outlinks returned by SPN2, and then submit
+  > capture requests only for the URLs you want to archive.
 
 []{#anchor-9}Limitations
 
-The operation of SPN2 is limited in several ways as described in the
-following table. The aim of these limitations is to ensure the
-performance and stability of the application.
+SPN2 is subject to a number of operational limits designed to ensure
+service performance, reliability and fair resource usage. The current
+limits are summarized in the table below..
 
 <table>
 <tbody>
@@ -613,22 +616,21 @@ performance and stability of the application.
 </tr>
 <tr class="even">
 <td>Network connection timeout = 10s</td>
-<td>If we try connecting to a target URL and it takes more than 10s to
-respond, we consider the server unresponsive and return a capture
-error.</td>
+<td>If the target URL does not respond within 10 seconds, the server is
+considered unresponsive and the capture fails.</td>
 </tr>
 <tr class="odd">
 <td>Max captures per minute for authenticated users = 12 and for
 anonymous users = 4.</td>
-<td>Any user can do N captures per minute. If you try to start more,
-SPN2 returns an error.</td>
+<td>Any user can do N captures per minute. Exceeding these limits
+results in an error.</td>
 </tr>
 <tr class="even">
 <td>Max web page capture time = 50s</td>
-<td>SPN2 browsers can spend up to 50s visiting a target URL and running
-JS behaviors. If web page capture hasn’t finished after that time, we
-terminate the browser and check if we have downloaded sufficient content
-to consider this a successful capture.</td>
+<td>The SPN2 browser can spend up to 50s loading a URL and running JS
+behaviors. If the process does not complete within this window, it is
+terminated. Partial success may still be recorded if sufficient content
+has been captured.</td>
 </tr>
 <tr class="odd">
 <td>Max capture duration = 2m</td>
@@ -637,12 +639,12 @@ to consider this a successful capture.</td>
 <tr class="even">
 <td>Max JS behavior runtime = 7s (configurable)</td>
 <td>The total time running JS events (scroll down, mouse over, etc)
-cannot be over 5s by default. This is configurable using param:
-<em>js_behavior_timeout=&lt;N&gt;</em></td>
+cannot be over 5s by default.</td>
 </tr>
 <tr class="odd">
 <td>Max redirects = 3</td>
-<td>SPN2 tries to follow redirects automatically.</td>
+<td>Up to 3 HTTP redirects are followed automatically during
+capture.</td>
 </tr>
 <tr class="even">
 <td>Max resource size = 2GB</td>
@@ -674,19 +676,19 @@ list of all outlinks without any filtering or ranking. You could use
 that list to download any URLs necessary.</p></td>
 </tr>
 <tr class="even">
-<td>Max number of outlinks returned = 1000</td>
+<td>Max number of outlinks returned = 500</td>
 <td>SPN2 just returns a list of outlinks if "capture outlinks" is not
-selected. This list is limited to 1000 items.</td>
+selected. This list is limited to 500 items.</td>
 </tr>
 <tr class="odd">
-<td>Max number of embeds returned = 1000</td>
+<td>Max number of embeds returned = 500</td>
 <td>SPN2 tracks all captured embeds and lists them in "resources". This
-list is limited to 1000 items.</td>
+list is limited to 500 items.</td>
 </tr>
 <tr class="even">
 <td>Max number of links captured from emails in <a
-href="mailto:spn@archive.org"><em>spn@archive.org</em></a> = 500</td>
-<td>SPN2 tries to capture the first 500 links in emails sent to <a
+href="mailto:spn@archive.org"><em>spn@archive.org</em></a> = 300</td>
+<td>SPN2 tries to capture the first 300 links in emails sent to <a
 href="mailto:spn@archive.org"><em>spn@archive.org</em></a>. </td>
 </tr>
 <tr class="odd">
@@ -701,8 +703,8 @@ per day. If you need to make more captures, please contact <a
 href="mailto:info@archive.org"><em>info@archive.org</em></a>. </td>
 </tr>
 <tr class="odd">
-<td>Max captures per day for a URL = 10</td>
-<td>It is possible to capture the same URL only 10 times per day.</td>
+<td>Max captures per day for a URL = 5</td>
+<td>It is possible to capture the same URL only 5 times per day.</td>
 </tr>
 <tr class="even">
 <td>Blocked URLs</td>
@@ -713,10 +715,9 @@ capture.</td>
 <tr class="odd">
 <td>Artificial delays for multiple concurrent captures on the same
 host.</td>
-<td><p>When we run more than 20 concurrent captures on the same host, we
-introduce an artificial delay on subsequent captures to avoid
-overloading the target and blocking SPN2.</p>
-<p>The delay algorithm is:</p>
+<td><p>When more than 20 concurrent captures target the same host,
+additional requests are delayed to avoid overloading the target and
+blocking SPN2. The delay algorithm is:</p>
 <p>When concurrent_capture_number &gt; 20 for the same host, delay
 concurrent_capture_number/5 sec.</p>
 <p>For example: if concurrent_capture_number = 50, delay a new capture
@@ -727,8 +728,8 @@ by 50/5 = 10 sec.</p></td>
 href="mailto:spn@archive.org"><em>spn@archive.org</em></a> service per
 user per day= 10</td>
 <td>You can send HTML emails with links to capture at <a
-href="mailto:spn@archive.org"><em>spn@archive.org</em></a>. The system
-processes 10 emails per user per day and discards the rest.</td>
+href="mailto:spn@archive.org"><em>spn@archive.org</em></a>. The service
+processes up to 10 emails per user per day and discards the rest.</td>
 </tr>
 <tr class="odd">
 <td>Max screenshot size is 4MB</td>
@@ -737,11 +738,13 @@ skipped to avoid system overload.</td>
 </tr>
 <tr class="even">
 <td>Max captures’ size per day is 2GB for anonymous users.</td>
-<td>Anonymous users can capture no more than 2GB total per day.</td>
+<td>Anonymous Patrons are limited to 500MB total captured data per
+day.</td>
 </tr>
 <tr class="odd">
 <td>Max captures’ size per day is 5GB for authenticated users.</td>
-<td>Authenticated users can capture no more than 5GB total per day.</td>
+<td>Authenticated Patrons are limited to 5GB total captured data per
+day.</td>
 </tr>
 </tbody>
 </table>
@@ -806,58 +809,57 @@ https://web.archive.org/web/{$data['timestamp']}/{$data['original_url']}\n");</p
 
 []{#anchor-11}Frequently Asked Questions
 
-**Q1. I can see the page
-**[***http://example.com/***](http://example.com/)** from my web browser
-but when I try to capture it, I get an error: \"Live page is not
-available\".**
+**Q1. I can access the page
+**[***http://example.com/***](http://example.com/)** from my browser but
+SPN2 returns error: \"Live page is not available\".**
 
-Before SPN2 captures a URL, it tries to do a quick HTTP HEAD and if that
-fails an HTTP GET to see if the target URL is online. If these requests
-fail, we return an error: *\"Live page is not available\"*. If they are
-successful, we make the capture using our headless browser. Also, we
-cache the result for 10 min to speedup this check for subsequent
-requests. This check may return an invalid result for many reasons:
+Before starting a capture, SPN2 performs a quick HTTP HEAD and if that
+fails an HTTP GET to see if the target URL is online. If both requests
+fail, SPN2 returns the error: *\"Live page is not available\"*.
 
-1.  The site may have blocked requests from IA IPs in general.
+Successful checks are cached for 10 minutes to improve performance for
+subsequent requests.
 
-2.  We are doing many captures on the same site at the same time (e.g.
-    > by other SPN2 users or via \"capture outlinks\"), the target site
-    > receives too many connections from SPN2 and its firewall/web
-    > server blocks them. In these cases, the capture result would be
-    > \"Live page is not available\" but the site would be perfectly
-    > fine for you as you are using it from your home IP address. To
-    > mitigate this issue, we are delaying captures from the same host
-    > when there are 50+ concurrent captures.
+However, this check may be inaccurate for several reasons:
 
-3.  Sites may actually be down for a few seconds or more due to
-    > technical issues on their end (e.g. network outages, server
-    > problems, etc).
+1.  **IP-based blocking: **The site may have blocked requests from IA
+    > IPs in general.
+
+2.  **Traffic overload/throttling:** High concurrent capture activity
+    > (from other users or outlink expansion) may cause the target
+    > server or firewall to rate-limit or block SPN2 requests. In such
+    > cases, the site may still be accessible from a normal browser but
+    > not from SPN2. To reduce this risk, SPN2 applies delays when there
+    > are 50+ concurrent captures targeting the same host.
+
+3.  **Transient server issues: **Sites are often temporarily unavailable
+    > due to outages, network issues or server-side instability.
 
 **Q2. I'm trying to capture a web page that contains a lot of links
 using the \"capture outlinks\" option but no outlinks are captured.**
 
 SPN2 can extract outlinks from many file types: HTML pages, PDF, RSS,
-XML and JSON files. For each file type, it runs a special link extractor
-software for 30 sec. For HTML pages, it's a JS script that extracts URLs
+XML, epub and JSON files. For each format, it uses a dedicated
+extraction pipeline. For HTML pages, it's a JS script that extracts URLs
 from a\[href\], area\[href\], a\[onclick\], a\[ondblclick\]:
 [*https://github.com/internetarchive/brozzler/blob/master/brozzler/js-templates/extract-outlinks.js*](https://github.com/internetarchive/brozzler/blob/master/brozzler/js-templates/extract-outlinks.js)
 
-If SPN2 cannot extract outlinks from a URL, one of the following issues
-may occur:
+Outlink extraction may fail or return no results due to the following
+conditions:
 
-1.  The outlink extraction couldn't finish processing in 30 sec and was
-    > terminated.
+- **Timeout during extraction:** Outlink processing did not complete
+  > within the 30-second extraction window.
 
-2.  The total URL capture took too long (the limit is 90 sec) and there
-    > wasn't time to run the outlink extraction in time.
+- **Overall capture timeout:** The full capture exceeded the 90-second
+  > limit, leaving insufficient time to run outlink extraction.
 
-3.  The target URL doesn't have links or they are encoded in a way that
-    > is not supported by the outlink extraction software (e.g. using
-    > some obscure HTML element attributes and events or an encrypted
-    > PDF).
+- **Unsupported or inaccessible link formats:** Links may be embedded in
+  > non-standard attributes, dynamically generated via obfuscated
+  > JavaScript, or stored in encrypted/unsupported formats (e.g.,
+  > encrypted PDFs).
 
-**Q3. When I try to do a capture, I get a message saying***** \"Your
-capture will begin in XXs.\". *****Is SPN2 overloaded?**
+**Q3. Why do I see***** \"Your capture will begin in XXs.\". *****Is
+SPN2 overloaded?**
 
 When we run more than 20 concurrent captures on the same host, we
 introduce an artificial delay on subsequent captures to avoid

@@ -5,6 +5,10 @@
 **Please see also SPN2 public API docs:**
 [*https://docs.google.com/document/d/1Nsv52MvSjbLb2PCpHlat0gkzw0EvtSgpKHu4mk0MnrA/edit*](https://docs.google.com/document/d/1Nsv52MvSjbLb2PCpHlat0gkzw0EvtSgpKHu4mk0MnrA/edit)
 
+**2026-05-20**
+
+- Upgrade web crawlers to Google Chrome 148.
+
 **2026-03-22**
 
 - Upgrade web crawlers to Google Chrome 142.
